@@ -69,26 +69,37 @@ if __name__ == "__main__":
     client = AsyncIOMotorClient(mongoclient_uri)
     db = client.sampleDB
     collection = db.sample_collection
-    for i in range(len(input_example)):
-        input_data = input_example[i]
+    for test_number in range(len(input_example)):
+        input_data = input_example[test_number]
         output_data = aggregate_data(
             collection,
             input_data["dt_from"],
             input_data["dt_upto"],
             input_data["group_type"],
         )
-        print(output_data)
-        if output_data == output_example[i]:
-            print(f"Тест {i}- Пройден успешно")
+        if output_data == output_example[test_number]:
+            print(f"Тест {test_number}- Пройден успешно")
         else:
-            print(f"Тест {i}- Ошибка")
-
-            for x in range(len(output_data["dataset"])):
-                if output_data["dataset"][x] != output_example[i]["dataset"][x]:
-                    print(x)
+            print(f"Тест {test_number}- Ошибка")
+            for line in range(len(output_data["dataset"])):
+                if (
+                    output_data["dataset"][line]
+                    != output_example[test_number]["dataset"][line]
+                ):
+                    print(line)
                     print(
-                        output_data["dataset"][x], " ", output_example[i]["dataset"][x]
+                        output_data["dataset"][line],
+                        "|",
+                        output_example[test_number]["dataset"][line],
                     )
-                if output_data["labels"][x] != output_example[i]["labels"][x]:
-                    print(x)
-                    print(output_data["labels"][x], " ", output_example[i]["labels"][x])
+            for line in range(len(output_data["labels"])):
+                if (
+                    output_data["labels"][line]
+                    != output_example[test_number]["labels"][line]
+                ):
+                    print(line)
+                    print(
+                        output_data["labels"][line],
+                        "|",
+                        output_example[test_number]["labels"][line],
+                    )
